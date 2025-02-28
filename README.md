@@ -12,7 +12,7 @@ The schematic was made in KiCad 8.0.
 The PCB was also made in KiCad 8.0. The GND planes are hidden in the images below.
 
 <div style="display:flex">
-  <img src="images/pcb_front.png" width="50%">
-  <img src="images/pcb_back.png" width="50%">
+  <img src="images/pcb_front.png" width="48%">
+  <img src="images/pcb_back.png" width="48%">
 </div>
 <img src="images/pcb_real.jpg" width="100%">
