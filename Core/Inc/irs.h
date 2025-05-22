@@ -6,7 +6,7 @@
 #define INC_IRS_H_
 
 // The number of samples to take
-#define NUM_SAMPLES 128
+#define NUM_SAMPLES 64
 
 // Distinguishes IRs
 typedef enum
@@ -18,10 +18,10 @@ typedef enum
 }IR;
 
 // IR normalization constant. Normalizes to 1.0
-#define IR_LEFT_C 1.0;
-#define IR_FRONT_LEFT_C 1.0;
-#define IR_FRONT_RIGHT_C 1.0;
-#define IR_RIGHT_C 1.0;
+#define IR_LEFT_C 1432.2;
+#define IR_FRONT_LEFT_C 725.0;
+#define IR_FRONT_RIGHT_C 423.0;
+#define IR_RIGHT_C 1001.0;
 
 uint16_t readIR(IR ir);
 float readLeftIR(void);

@@ -8,10 +8,23 @@
 #include "motors.h"
 #include "pid.h"
 
-// Move n encoder counts
+// Move n encoder counts with encoder angle correction
 void move(int n) {
 	resetPID();
-	setPIDMode(MOVE_ENC); // Later add new move type or conditional in this for MOVE_IR
+	setPIDMode(MOVE_ENC);
+	setPIDGoalA(0);
+	setPIDGoalD(n);
+
+	while(PIDdone() == 0);
+
+	resetPID();
+}
+
+
+//Move n encoder counts with ir angle correction
+void move_ir(int n) {
+	resetPID();
+	setPIDMode(MOVE_IR_BOTH);
 	setPIDGoalA(0);
 	setPIDGoalD(n);
 

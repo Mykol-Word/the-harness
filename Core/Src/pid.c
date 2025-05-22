@@ -6,27 +6,40 @@
 #include "pid.h"
 #include "motors.h"
 #include "encoders.h"
+#include "irs.h"
 
 float kP_dist = 0;
 float kD_dist = 0;
 
-float kP_angl = 0;
-float kD_angl = 0;
+float kP_angl_enc = 0;
+float kD_angl_enc = 0;
+
+float kP_angl_ir = 0;
+float kD_angl_ir = 0;
 
 int success_counts = 1000;
 int counter = 0;
 
-float angl_goal = 0;
+float angl_enc_goal = 0;
+float angl_ir_goal = 0;
 float dist_goal = 0;
 
 float dist_error = 0;
-float angl_error = 0;
+float angl_enc_error = 0;
+float angl_ir_error = 0;
 
 float old_dist_error = 0;
-float old_angl_error = 0;
+float old_angl_enc_error = 0;
+float old_angl_ir_error = 0;
 
 float dist_response = 0;
-float angl_response = 0;
+float angl_enc_response = 0;
+float angl_ir_response = 0;
+
+float left_ir = 0;
+float front_left_ir = 0;
+float front_right_ir = 0;
+float right_ir = 0;
 
 MODE mode = NONE;
 
@@ -46,20 +59,26 @@ void resetPID() {
 
 	kP_dist = 0;
 	kD_dist = 0;
-	kP_angl = 0;
-	kD_angl = 0;
+	kP_angl_enc = 0;
+	kD_angl_enc = 0;
+	kP_angl_ir = 0;
+	kD_angl_ir = 0;
 
-	angl_goal = 0;
+	angl_enc_goal = 0;
+	angl_ir_goal = 0;
 	dist_goal = 0;
 
 	dist_error = 0;
-	angl_error = 0;
+	angl_enc_error = 0;
+	angl_ir_error = 0;
 
 	old_dist_error = 0;
-	old_angl_error = 0;
+	old_angl_enc_error = 0;
+	old_angl_ir_error = 0;
 
 	dist_response = 0;
-	angl_response = 0;
+	angl_enc_response = 0;
+	angl_ir_response = 0;
 
 	counter = 0;
 	mode = NONE;
@@ -70,29 +89,59 @@ void updatePID() {
 	int L_encoder_cnt = getLeftEncoderCounts();
 	int R_encoder_cnt = getRightEncoderCounts();
 
+	if(mode == MOVE_ENC || mode == MOVE_IR_BOTH || mode == MOVE_IR_LEFT || mode == MOVE_IR_RIGHT ) {
+		if(right_ir >= RIGHT_IR_THRESHOLD && left_ir >= LEFT_IR_THRESHOLD) mode = MOVE_IR_BOTH;
+		else if(left_ir >= LEFT_IR_THRESHOLD) mode = MOVE_IR_LEFT;
+		else if(right_ir >= RIGHT_IR_THRESHOLD) mode = MOVE_IR_RIGHT;
+		else mode = MOVE_ENC;
+	}
+
 	//update errors
 	old_dist_error = dist_error;
-	old_angl_error = angl_error;
+	old_angl_enc_error = angl_enc_error;
+	old_angl_ir_error = angl_ir_error;
 
 	dist_error = dist_goal - (R_encoder_cnt + L_encoder_cnt) / 2.0;
-	angl_error = angl_goal - (R_encoder_cnt - L_encoder_cnt);
+	angl_enc_error = angl_enc_goal - (R_encoder_cnt - L_encoder_cnt);
+
+	float ir_right_error = 1.0 - right_ir;
+	float ir_left_error = 1.0 - left_ir;
+
+	switch(mode) {
+		case(MOVE_IR_BOTH):
+			angl_ir_error = (ir_right_error - ir_left_error);
+			break;
+		case(MOVE_IR_LEFT):
+			angl_ir_error = -(1 * ir_left_error);
+			break;
+		case(MOVE_IR_RIGHT):
+			angl_ir_error = (1 * ir_right_error);
+			break;
+		default:
+			angl_ir_error = 0;
+	}
+
 
 	//PID Functions
 	dist_response = dist_error * kP_dist + (dist_error - old_dist_error) * kD_dist;
-	angl_response = angl_error * kP_angl + (angl_error - old_angl_error) * kD_angl;
+	angl_enc_response = angl_enc_error * kP_angl_enc + (angl_enc_error - old_angl_enc_error) * kD_angl_enc;
+	angl_ir_response = angl_ir_error * kP_angl_ir + (angl_ir_error - old_angl_ir_error) * kD_angl_ir;
 
 	switch(mode) {
 		case(MOVE_ENC):
-			setMotorRPWM(0.25 + angl_response);
-			setMotorLPWM(0.25 - angl_response);
+			setMotorRPWM(0.25 + angl_enc_response);
+			setMotorLPWM(0.25 - angl_enc_response);
 			break;
-		case(MOVE_IR):
-			//not implemented
-			resetMotors();
+		case(MOVE_IR_BOTH):
+		case(MOVE_IR_LEFT):
+		case(MOVE_IR_RIGHT):
+			setMotorRPWM(CLAMP(0.25 - angl_ir_response, 0.24, 0.35));
+			setMotorLPWM(CLAMP(0.25 + angl_ir_response, 0.24, 0.35));
+			break;
 		case(TURN):
 		case(IDLE):
-			setMotorRPWM(angl_response + dist_response);
-			setMotorLPWM(-angl_response + dist_response);
+			setMotorRPWM(angl_enc_response + dist_response);
+			setMotorLPWM(-angl_enc_response + dist_response);
 			break;
 		case(NONE):
 		default:
@@ -107,9 +156,9 @@ void setPIDGoalD(int distance) {
 	dist_goal = distance;
 }
 
-// Set angl_goal to angle encoder counts
+// Set angl_enc_goal to angle encoder counts
 void setPIDGoalA(int angle) {
-	angl_goal = angle;
+	angl_enc_goal = angle;
 }
 
 void setPIDMode(int new_mode) {
@@ -119,28 +168,42 @@ void setPIDMode(int new_mode) {
 			mode = new_mode;
 			kP_dist = 0.013;
 			kD_dist = 0;
-			kP_angl = 0.04;
-			kD_angl = 0.4;
+			kP_angl_enc = 0.04;
+			kD_angl_enc = 0.4;
+			kP_angl_ir = 0;
+			kD_angl_ir = 0;
 			success_counts = 1;
 			break;
-		case(MOVE_IR):
-			// not implemented
+		case(MOVE_IR_BOTH):
+		case(MOVE_IR_LEFT):
+		case(MOVE_IR_RIGHT):
+			mode = new_mode;
+			kP_dist = 0;
+			kD_dist = 0;
+			kP_angl_enc = 0;
+			kD_angl_enc = 0;
+			kP_angl_ir = 0.8;
+			kD_angl_ir = 15;
 			break;
 		case(TURN):
 			mode = new_mode;
 			kP_dist = 0.013;
 			kD_dist = 0;
-			kP_angl = 0.015;
-			kD_angl = 0.3;
-			success_counts = 1000;
+			kP_angl_enc = 0.015;
+			kD_angl_enc = 0.3;
+			kP_angl_ir = 0;
+			kD_angl_ir = 0;
+			success_counts = 75;
 			break;
 		case(IDLE):
 			mode = new_mode;
 			kP_dist = 0.03;
 			kD_dist = 0;
-			kP_angl = 0.03;
-			kD_angl = 0.3;
-			success_counts = 50000;
+			kP_angl_enc = 0.03;
+			kD_angl_enc = 0.3;
+			kP_angl_ir = 0;
+			kD_angl_ir = 0;
+			success_counts = 75;
 			break;
 		case(NONE):
 		default:
@@ -148,26 +211,29 @@ void setPIDMode(int new_mode) {
 			mode = NONE;
 			kP_dist = 0;
 			kD_dist = 0;
-			kP_angl = 0;
-			kD_angl = 0;
+			kP_angl_enc = 0;
+			kD_angl_enc = 0;
+			kP_angl_ir = 0;
+			kD_angl_ir = 0;
 			break;
 	}
 }
 
 // Return 1 if PID is done, 0 otherwise. Controller/mode specific.
 int8_t PIDdone(void) {
+	updateIR(readLeftIR(),readFrontLeftIR(),readFrontRightIR(), readRightIR());
 	switch(mode){
 		case(MOVE_ENC):
+		case(MOVE_IR_BOTH):
+		case(MOVE_IR_LEFT):
+		case(MOVE_IR_RIGHT):
 			if(dist_error < 0) {
 				return 1;
 			}
 			return 0;
 			break;
-		case(MOVE_IR):
-			// not implemented
-			return 0;
 		case(TURN):
-			if(angl_error <= 10 && angl_error >= -10) {
+			if(angl_enc_error <= 10 && angl_enc_error >= -10) {
 				counter += 1;
 				if (counter >= success_counts) return 1;
 			}
@@ -188,5 +254,12 @@ int8_t PIDdone(void) {
 			// This should never happen.
 			return 0;
 	}
-
 }
+
+void updateIR(float l, float fl, float fr, float r) {
+	left_ir = l;
+	front_left_ir = fl;
+	front_right_ir = fr;
+	right_ir = r;
+}
+

@@ -26,6 +26,7 @@
 #include "controller.h"
 #include "systick.h"
 #include "delay.h"
+#include "pid.h"
 #include "irs.h"
 /* USER CODE END Includes */
 
@@ -56,10 +57,10 @@ TIM_HandleTypeDef htim4;
 int16_t left_counts = 0;
 int16_t right_counts = 0;
 
-int left_ir = 0;
-int front_left_ir = 0;
-int front_right_ir = 0;
-int right_ir = 0;
+float left_ir_m= 0;
+float front_left_ir_m= 0;
+float front_right_ir_m= 0;
+float right_ir_m= 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -129,67 +130,67 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   /*
    * Notes about movement
-   * 414 PERFECT 90
+   * 412 PERFECT 90
    * 830 NEARLY PERFECT 180
    *
    *
    */
   while (1)
   {
-	left_ir = readLeftIR();
-	front_left_ir = readFrontLeftIR();
-	front_right_ir = readFrontRightIR();
-	right_ir = readRightIR();
-	resetMotors();
-	/*
+	left_ir_m= readLeftIR();
+	front_left_ir_m= readFrontLeftIR();
+	front_right_ir_m= readFrontRightIR();
+	right_ir_m= readRightIR();
+
 	HAL_Delay(500);
+
 	left_counts = getLeftEncoderCounts();
 	right_counts = getRightEncoderCounts();
 
-	move(625);
-	move(625);
-	move(625);
+	move_ir(625);
+	move_ir(625);
+	move_ir(625);
 	idle();
-	turn(-414);
-	move(625);
+	turn(-412);
+	move_ir(625);
 	idle();
-	turn(414);
-	move(625);
+	turn(412);
+	move_ir(625);
 	idle();
-	turn(-414);
-	move(625);
-	move(625);
+	turn(-412);
+	move_ir(625);
+	move_ir(625);
 	idle();
-	turn(-414);
-	move(625);
+	turn(-412);
+	move_ir(625);
 	idle();
-	turn(-414);
-	move(625);
+	turn(-412);
+	move_ir(625);
 	idle();
-	turn(414);
-	move(625);
+	turn(412);
+	move_ir(625);
 	idle();
-	turn(-414);
-	move(625);
+	turn(-412);
+	move_ir(625);
 	idle();
-	turn(414);
-	move(625);
-	move(625);
+	turn(412);
+	move_ir(625);
+	move_ir(625);
 	idle();
-	turn(414);
-	move(625);
-	move(625);
-	move(625);
+	turn(412);
+	move_ir(625);
+	move_ir(625);
+	move_ir(625);
 	idle();
-	turn(414);
-	move(625);
-	move(625);
-	move(625);
-	move(625);
+	turn(412);
+	move_ir(625);
+	move_ir(625);
+	move_ir(625);
+	move_ir(625);
 	idle();
 
 	HAL_Delay(10000);
-	*/
+
 
     /* USER CODE END WHILE */
 
