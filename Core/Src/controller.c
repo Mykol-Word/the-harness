@@ -45,6 +45,18 @@ void turn(int n) {
 	resetPID();
 }
 
+//turns your mouse smoothly
+void turn_smooth(int d, int a) {
+	resetPID();
+	setPIDMode(TURN_SMOOTH);
+	setPIDGoalA(a);
+	setPIDGoalD(d);
+
+	while(PIDdone() == 0);
+
+	resetPID();
+}
+
 // brakes or idles your mouse, forcing it to stay in place
 void idle() {
 	resetPID();

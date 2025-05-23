@@ -15,7 +15,8 @@ typedef enum
 	MOVE_IR_LEFT = 2,
 	MOVE_IR_RIGHT = 3,
 	TURN = 4,
-	IDLE = 5
+	TURN_SMOOTH = 5,
+	IDLE = 6
 }MODE;
 
 

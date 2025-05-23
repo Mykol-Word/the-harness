@@ -147,6 +147,30 @@ int main(void)
 	left_counts = getLeftEncoderCounts();
 	right_counts = getRightEncoderCounts();
 
+	/*
+	move_ir(625);
+	move_ir(625);
+	move_ir(625);
+	turn_smooth(560, -420);
+	turn_smooth(560, 390);
+	turn_smooth(560, -420);
+	move_ir(625);
+	turn_smooth(560, -420);
+	turn_smooth(560, -420);
+	turn_smooth(560, 390);
+	turn_smooth(560, -420);
+	turn_smooth(560, 390);
+	move_ir(625);
+	turn_smooth(560, 390);
+	move_ir(625);
+	move_ir(625);
+	turn_smooth(560, 390);
+	move_ir(625);
+	move_ir(625);
+	move_ir(625);
+	HAL_Delay(100000);
+	*/
+
 	move_ir(625);
 	move_ir(625);
 	move_ir(625);
