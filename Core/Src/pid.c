@@ -135,8 +135,8 @@ void updatePID() {
 		case(MOVE_IR_BOTH):
 		case(MOVE_IR_LEFT):
 		case(MOVE_IR_RIGHT):
-			setMotorRPWM(CLAMP(0.3 - angl_ir_response, 0.24, 0.4));
-			setMotorLPWM(CLAMP(0.3 + angl_ir_response, 0.24, 0.4));
+			setMotorRPWM(CLAMP(0.3 - angl_ir_response, 0.26, 0.35));
+			setMotorLPWM(CLAMP(0.3 + angl_ir_response, 0.26, 0.35));
 			break;
 		case(TURN):
 		case(IDLE):
@@ -182,14 +182,14 @@ void setPIDMode(int new_mode) {
 			kD_dist = 0;
 			kP_angl_enc = 0;
 			kD_angl_enc = 0;
-			kP_angl_ir = 0.6;
-			kD_angl_ir = 40;
+			kP_angl_ir = 0.2;
+			kD_angl_ir = 15;
 			break;
 		case(TURN):
 			mode = new_mode;
 			kP_dist = 0.013;
 			kD_dist = 0;
-			kP_angl_enc = 0.015;
+			kP_angl_enc = 0.017;
 			kD_angl_enc = 0.3;
 			kP_angl_ir = 0;
 			kD_angl_ir = 0;

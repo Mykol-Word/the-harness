@@ -157,7 +157,8 @@ int main(void)
         Action nextMove = solver();
         switch(nextMove){
             case FORWARD:
-                move_ir(625);
+            	if(last_action != FORWARD) move_ir(600);
+            	else move_ir(625);
                 last_action = FORWARD;
                 break;
             case LEFT:

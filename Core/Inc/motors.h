@@ -7,7 +7,7 @@
 #ifndef INC_MOTORS_H_
 #define INC_MOTORS_H_
 
-#define PWM_MAX 0.4 // Max speed
+#define PWM_MAX 0.43 // Max speed
 #define MAX_TIMER_COUNTS 3199
 #define CLAMP(val, min, max) ((val) < (min) ? (min) : ((val) > (max) ? (max) : (val)))
 
