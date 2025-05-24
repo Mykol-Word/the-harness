@@ -90,10 +90,10 @@ void updatePID() {
 	int R_encoder_cnt = getRightEncoderCounts();
 
 	if(mode == MOVE_ENC || mode == MOVE_IR_BOTH || mode == MOVE_IR_LEFT || mode == MOVE_IR_RIGHT ) {
-		if(right_ir >= RIGHT_IR_THRESHOLD && left_ir >= LEFT_IR_THRESHOLD) mode = MOVE_IR_BOTH;
-		else if(left_ir >= LEFT_IR_THRESHOLD) mode = MOVE_IR_LEFT;
-		else if(right_ir >= RIGHT_IR_THRESHOLD) mode = MOVE_IR_RIGHT;
-		else mode = MOVE_ENC;
+		if(right_ir >= RIGHT_IR_THRESHOLD && left_ir >= LEFT_IR_THRESHOLD) setPIDMode(MOVE_IR_BOTH);
+		else if(left_ir >= LEFT_IR_THRESHOLD) setPIDMode(MOVE_IR_LEFT);
+		else if(right_ir >= RIGHT_IR_THRESHOLD) setPIDMode(MOVE_IR_RIGHT);
+		else setPIDMode(MOVE_ENC);
 	}
 
 	//update errors
@@ -129,14 +129,14 @@ void updatePID() {
 
 	switch(mode) {
 		case(MOVE_ENC):
-			setMotorRPWM(0.25 + angl_enc_response);
-			setMotorLPWM(0.25 - angl_enc_response);
+			setMotorRPWM(0.3 + angl_enc_response);
+			setMotorLPWM(0.3 - angl_enc_response);
 			break;
 		case(MOVE_IR_BOTH):
 		case(MOVE_IR_LEFT):
 		case(MOVE_IR_RIGHT):
-			setMotorRPWM(CLAMP(0.25 - angl_ir_response, 0.24, 0.35));
-			setMotorLPWM(CLAMP(0.25 + angl_ir_response, 0.24, 0.35));
+			setMotorRPWM(CLAMP(0.3 - angl_ir_response, 0.24, 0.4));
+			setMotorLPWM(CLAMP(0.3 + angl_ir_response, 0.24, 0.4));
 			break;
 		case(TURN):
 		case(IDLE):
@@ -182,8 +182,8 @@ void setPIDMode(int new_mode) {
 			kD_dist = 0;
 			kP_angl_enc = 0;
 			kD_angl_enc = 0;
-			kP_angl_ir = 0.8;
-			kD_angl_ir = 15;
+			kP_angl_ir = 0.6;
+			kD_angl_ir = 40;
 			break;
 		case(TURN):
 			mode = new_mode;

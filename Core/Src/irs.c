@@ -12,7 +12,7 @@ uint16_t adc_buf[NUM_SAMPLES];
 uint8_t complete = 0;
 
 // Reads IR value specified
-uint16_t readIR(IR ir)
+int readIR(IR ir)
 {
 	// Turn on appropriate emitter
 	switch (ir)
@@ -68,7 +68,7 @@ float readRightIR(void)
 }
 
 // Reads the specific channel of the ADC corresponding to the correct IR
-uint16_t analogRead(IR ir)
+int analogRead(IR ir)
 {
     ADC_ChannelConfTypeDef sConfig = {0}; // this initializes the IR ADC [Analog to Digital Converter]
     ADC_HandleTypeDef *hadc1_ptr = Get_HADC1_Ptr(); // this is a pointer to your hal_adc

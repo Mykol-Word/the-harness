@@ -18,16 +18,16 @@ typedef enum
 }IR;
 
 // IR normalization constant. Normalizes to 1.0
-#define IR_LEFT_C 1432.2;
-#define IR_FRONT_LEFT_C 725.0;
-#define IR_FRONT_RIGHT_C 423.0;
-#define IR_RIGHT_C 1001.0;
+#define IR_LEFT_C 1643.0;
+#define IR_FRONT_LEFT_C 895.0;
+#define IR_FRONT_RIGHT_C 1276.0;
+#define IR_RIGHT_C 1015.0;
 
-uint16_t readIR(IR ir);
+int readIR(IR ir);
 float readLeftIR(void);
 float readFrontLeftIR(void);
 float readFrontRightIR(void);
 float readRightIR(void);
-uint16_t analogRead(IR ir);
+int analogRead(IR ir);
 
 #endif /* INC_IRS_H_ */

@@ -28,6 +28,9 @@
 #include "delay.h"
 #include "pid.h"
 #include "irs.h"
+#include "solver.h"
+#include "API.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,6 +59,8 @@ TIM_HandleTypeDef htim4;
 /* USER CODE BEGIN PV */
 int16_t left_counts = 0;
 int16_t right_counts = 0;
+Action last_action = 0;
+
 
 float left_ir_m= 0;
 float front_left_ir_m= 0;
@@ -147,6 +152,30 @@ int main(void)
 	left_counts = getLeftEncoderCounts();
 	right_counts = getRightEncoderCounts();
 
+    setup_environment();
+    while (1) {
+        Action nextMove = solver();
+        switch(nextMove){
+            case FORWARD:
+                move_ir(625);
+                last_action = FORWARD;
+                break;
+            case LEFT:
+            	if(last_action == FORWARD) idle();
+                turn(412);
+                last_action = LEFT;
+                break;
+            case RIGHT:
+            	if(last_action == FORWARD) idle();
+                turn(-412);
+                last_action = RIGHT;
+                break;
+            default:
+                break;
+        }
+    }
+
+	/*
 	move_ir(625);
 	move_ir(625);
 	move_ir(625);
@@ -190,7 +219,7 @@ int main(void)
 	idle();
 
 	HAL_Delay(10000);
-
+	*/
 
     /* USER CODE END WHILE */
 
