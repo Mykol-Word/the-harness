@@ -4,7 +4,7 @@
 #include "Cell.h"
 
 typedef enum Heading {NORTH, EAST, SOUTH, WEST} Heading;
-typedef enum Action {LEFT, FORWARD, RIGHT, NOTHING} Action;
+typedef enum Action {LEFT, FORWARD, RIGHT, FLIP, NOTHING} Action;
 typedef enum bool {false = 0, true = 1} bool;
 
 #define MAZE_W 16

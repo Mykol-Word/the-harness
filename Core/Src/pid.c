@@ -112,10 +112,10 @@ void updatePID() {
 			angl_ir_error = (ir_right_error - ir_left_error);
 			break;
 		case(MOVE_IR_LEFT):
-			angl_ir_error = -(1 * ir_left_error);
+			angl_ir_error = -(2 * ir_left_error);
 			break;
 		case(MOVE_IR_RIGHT):
-			angl_ir_error = (1 * ir_right_error);
+			angl_ir_error = (2 * ir_right_error);
 			break;
 		default:
 			angl_ir_error = 0;
@@ -135,8 +135,8 @@ void updatePID() {
 		case(MOVE_IR_BOTH):
 		case(MOVE_IR_LEFT):
 		case(MOVE_IR_RIGHT):
-			setMotorRPWM(CLAMP(0.3 - angl_ir_response, 0.26, 0.35));
-			setMotorLPWM(CLAMP(0.3 + angl_ir_response, 0.26, 0.35));
+			setMotorRPWM(CLAMP(0.3 - angl_ir_response, 0.28, 0.39));
+			setMotorLPWM(CLAMP(0.3 + angl_ir_response, 0.28, 0.39));
 			break;
 		case(TURN):
 		case(IDLE):
@@ -183,7 +183,7 @@ void setPIDMode(int new_mode) {
 			kP_angl_enc = 0;
 			kD_angl_enc = 0;
 			kP_angl_ir = 0.2;
-			kD_angl_ir = 15;
+			kD_angl_ir = 270;
 			break;
 		case(TURN):
 			mode = new_mode;
@@ -193,7 +193,7 @@ void setPIDMode(int new_mode) {
 			kD_angl_enc = 0.3;
 			kP_angl_ir = 0;
 			kD_angl_ir = 0;
-			success_counts = 75;
+			success_counts = 150;
 			break;
 		case(IDLE):
 			mode = new_mode;
@@ -203,7 +203,7 @@ void setPIDMode(int new_mode) {
 			kD_angl_enc = 0.3;
 			kP_angl_ir = 0;
 			kD_angl_ir = 0;
-			success_counts = 75;
+			success_counts = 150;
 			break;
 		case(NONE):
 		default:

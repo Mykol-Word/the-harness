@@ -158,7 +158,7 @@ int main(void)
         switch(nextMove){
             case FORWARD:
             	if(last_action != FORWARD) move_ir(600);
-            	else move_ir(625);
+            	else move_ir(605);
                 last_action = FORWARD;
                 break;
             case LEFT:
@@ -170,6 +170,11 @@ int main(void)
             	if(last_action == FORWARD) idle();
                 turn(-412);
                 last_action = RIGHT;
+                break;
+            case FLIP:
+            	if(last_action == FORWARD) idle();
+                turn(-830);
+                last_action = FLIP;
                 break;
             default:
                 break;

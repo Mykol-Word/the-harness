@@ -6,7 +6,7 @@
 #define INC_IRS_H_
 
 // The number of samples to take
-#define NUM_SAMPLES 64
+#define NUM_SAMPLES 32
 
 // Distinguishes IRs
 typedef enum

@@ -162,6 +162,11 @@ Action move_to_smaller_cell()
                         mouse.facing = rotate(facing, 0);
                         return LEFT;
                     }
+                    if(API_wallLeft() && API_wallRight()) {
+                    	mouse.facing = rotate(facing, 1);
+                    	mouse.facing = rotate(mouse.facing, 1);
+                    	return FLIP;
+                    }
                     mouse.facing = rotate(facing, 1);
                     return RIGHT;
                     break;
@@ -176,6 +181,11 @@ Action move_to_smaller_cell()
                     {
                         mouse.facing = rotate(facing, 0);
                         return LEFT;
+                    }
+                    if(API_wallLeft() && API_wallRight()) {
+                    	mouse.facing = rotate(facing, 1);
+                    	mouse.facing = rotate(mouse.facing, 1);
+                    	return FLIP;
                     }
                     mouse.facing = rotate(facing, 1);
                     return RIGHT;
@@ -192,6 +202,11 @@ Action move_to_smaller_cell()
                         mouse.facing = rotate(facing, 0);
                         return LEFT;
                     }
+                    if(API_wallLeft() && API_wallRight()) {
+                    	mouse.facing = rotate(facing, 1);
+                    	mouse.facing = rotate(mouse.facing, 1);
+                    	return FLIP;
+                    }
                     mouse.facing = rotate(facing, 1);
                     return RIGHT;
                     break;
@@ -206,6 +221,11 @@ Action move_to_smaller_cell()
                     {
                         mouse.facing = rotate(facing, 0);
                         return LEFT;
+                    }
+                    if(API_wallLeft() && API_wallRight()) {
+                    	mouse.facing = rotate(facing, 1);
+                    	mouse.facing = rotate(mouse.facing, 1);
+                    	return FLIP;
                     }
                     mouse.facing = rotate(facing, 1);
                     return RIGHT;
