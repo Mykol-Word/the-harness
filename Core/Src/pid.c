@@ -129,14 +129,14 @@ void updatePID() {
 
 	switch(mode) {
 		case(MOVE_ENC):
-			setMotorRPWM(0.3 + angl_enc_response);
-			setMotorLPWM(0.3 - angl_enc_response);
+			setMotorRPWM(0.35 + angl_enc_response);
+			setMotorLPWM(0.35 - angl_enc_response);
 			break;
 		case(MOVE_IR_BOTH):
 		case(MOVE_IR_LEFT):
 		case(MOVE_IR_RIGHT):
-			setMotorRPWM(CLAMP(0.3 - angl_ir_response, 0.28, 0.39));
-			setMotorLPWM(CLAMP(0.3 + angl_ir_response, 0.28, 0.39));
+			setMotorRPWM(CLAMP(0.35 - angl_ir_response, 0.32, 0.38));
+			setMotorLPWM(CLAMP(0.35 + angl_ir_response, 0.32, 0.38));
 			break;
 		case(TURN):
 		case(IDLE):
@@ -183,7 +183,7 @@ void setPIDMode(int new_mode) {
 			kP_angl_enc = 0;
 			kD_angl_enc = 0;
 			kP_angl_ir = 0.2;
-			kD_angl_ir = 270;
+			kD_angl_ir = 700;
 			break;
 		case(TURN):
 			mode = new_mode;
@@ -193,7 +193,7 @@ void setPIDMode(int new_mode) {
 			kD_angl_enc = 0.3;
 			kP_angl_ir = 0;
 			kD_angl_ir = 0;
-			success_counts = 150;
+			success_counts = 75;
 			break;
 		case(IDLE):
 			mode = new_mode;
@@ -203,7 +203,7 @@ void setPIDMode(int new_mode) {
 			kD_angl_enc = 0.3;
 			kP_angl_ir = 0;
 			kD_angl_ir = 0;
-			success_counts = 150;
+			success_counts = 75;
 			break;
 		case(NONE):
 		default:
@@ -227,10 +227,12 @@ int8_t PIDdone(void) {
 		case(MOVE_IR_BOTH):
 		case(MOVE_IR_LEFT):
 		case(MOVE_IR_RIGHT):
-			if(dist_error < 0) {
-				return 1;
+			if(front_right_ir > FRONT_RIGHT_IR_JUMP) {
+				return front_right_ir >= 0.9;
 			}
-			return 0;
+			else {
+				return dist_error < 0 || front_right_ir >= 0.9;
+			}
 			break;
 		case(TURN):
 			if(angl_enc_error <= 10 && angl_enc_error >= -10) {

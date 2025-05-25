@@ -153,12 +153,50 @@ int main(void)
 	right_counts = getRightEncoderCounts();
 
     setup_environment();
+    /*
+    move_ir(615);
+    idle();
+    HAL_Delay(2000);
+    move_ir(615);
+    move_ir(625);
+    idle();
+    HAL_Delay(2000);
+    move_ir(615);
+    move_ir(625);
+    move_ir(625);
+    idle();
+    HAL_Delay(2000);
+    move_ir(615);
+    move_ir(625);
+    move_ir(625);
+    move_ir(625);
+    idle();
+    */
+    /*
+    move_ir(590);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    move_ir(615);
+    idle();
+    HAL_Delay(1000000);
+*/
     while (1) {
         Action nextMove = solver();
         switch(nextMove){
             case FORWARD:
-            	if(last_action != FORWARD) move_ir(600);
-            	else move_ir(605);
+            	if(last_action != FORWARD) move_ir(570);
+            	else move_ir(591);
                 last_action = FORWARD;
                 break;
             case LEFT:
@@ -173,7 +211,7 @@ int main(void)
                 break;
             case FLIP:
             	if(last_action == FORWARD) idle();
-                turn(-830);
+                turn(-825);
                 last_action = FLIP;
                 break;
             default:

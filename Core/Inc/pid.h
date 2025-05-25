@@ -19,9 +19,10 @@ typedef enum
 }MODE;
 
 
-#define LEFT_IR_THRESHOLD 0.55
-#define RIGHT_IR_THRESHOLD 0.6
-#define FRONT_RIGHT_IR_THRESHOLD 0.5
+#define LEFT_IR_THRESHOLD 0.45
+#define RIGHT_IR_THRESHOLD 0.45
+#define FRONT_RIGHT_IR_THRESHOLD 0.35
+#define FRONT_RIGHT_IR_JUMP 0.4
 
 void resetPID(void);
 void updatePID(void);
