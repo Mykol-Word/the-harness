@@ -66,6 +66,7 @@ float left_ir_m= 0;
 float front_left_ir_m= 0;
 float front_right_ir_m= 0;
 float right_ir_m= 0;
+float buzzer = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -127,6 +128,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
+
   HAL_Delay(1000);
 
   /* USER CODE END 2 */
@@ -147,7 +149,7 @@ int main(void)
 	front_right_ir_m= readFrontRightIR();
 	right_ir_m= readRightIR();
 
-	HAL_Delay(500);
+	//HAL_Delay(500);
 
 	left_counts = getLeftEncoderCounts();
 	right_counts = getRightEncoderCounts();
@@ -195,9 +197,11 @@ int main(void)
         Action nextMove = solver();
         switch(nextMove){
             case FORWARD:
+            	HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, GPIO_PIN_SET);
             	if(last_action != FORWARD) move_ir(570);
             	else move_ir(591);
                 last_action = FORWARD;
+                HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, GPIO_PIN_RESET);
                 break;
             case LEFT:
             	if(last_action == FORWARD) idle();
@@ -553,10 +557,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LED_1_Pin|LED_2_Pin|LeftEmitter_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, Buzzer_Pin|RightEmitter_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(RightEmitter_GPIO_Port, RightEmitter_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, LED_1_Pin|LED_2_Pin|LeftEmitter_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(FrontRightEmitter_GPIO_Port, FrontRightEmitter_Pin, GPIO_PIN_RESET);
@@ -564,19 +568,19 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(FrontLeftEmitter_GPIO_Port, FrontLeftEmitter_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pins : Buzzer_Pin RightEmitter_Pin */
+  GPIO_InitStruct.Pin = Buzzer_Pin|RightEmitter_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
   /*Configure GPIO pins : LED_1_Pin LED_2_Pin LeftEmitter_Pin */
   GPIO_InitStruct.Pin = LED_1_Pin|LED_2_Pin|LeftEmitter_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : RightEmitter_Pin */
-  GPIO_InitStruct.Pin = RightEmitter_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(RightEmitter_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : FrontRightEmitter_Pin */
   GPIO_InitStruct.Pin = FrontRightEmitter_Pin;

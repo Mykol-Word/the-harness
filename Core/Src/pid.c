@@ -135,8 +135,8 @@ void updatePID() {
 		case(MOVE_IR_BOTH):
 		case(MOVE_IR_LEFT):
 		case(MOVE_IR_RIGHT):
-			setMotorRPWM(CLAMP(0.35 - angl_ir_response, 0.32, 0.38));
-			setMotorLPWM(CLAMP(0.35 + angl_ir_response, 0.32, 0.38));
+			setMotorRPWM(CLAMP(0.35 - angl_ir_response, 0.3, 0.4));
+			setMotorLPWM(CLAMP(0.35 + angl_ir_response, 0.3, 0.4));
 			break;
 		case(TURN):
 		case(IDLE):
@@ -166,7 +166,7 @@ void setPIDMode(int new_mode) {
 	switch(new_mode){
 		case(MOVE_ENC):
 			mode = new_mode;
-			kP_dist = 0.013;
+			kP_dist = 0;
 			kD_dist = 0;
 			kP_angl_enc = 0.04;
 			kD_angl_enc = 0.4;
@@ -182,8 +182,8 @@ void setPIDMode(int new_mode) {
 			kD_dist = 0;
 			kP_angl_enc = 0;
 			kD_angl_enc = 0;
-			kP_angl_ir = 0.2;
-			kD_angl_ir = 700;
+			kP_angl_ir = 0.06;
+			kD_angl_ir = 60;
 			break;
 		case(TURN):
 			mode = new_mode;
@@ -235,6 +235,8 @@ int8_t PIDdone(void) {
 			}
 			break;
 		case(TURN):
+			if((int)angl_enc_error % 10 == 0) HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, GPIO_PIN_SET);
+			else HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, GPIO_PIN_RESET);
 			if(angl_enc_error <= 10 && angl_enc_error >= -10) {
 				counter += 1;
 				if (counter >= success_counts) return 1;

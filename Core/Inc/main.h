@@ -59,6 +59,8 @@ ADC_HandleTypeDef* Get_HADC1_Ptr(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define Buzzer_Pin GPIO_PIN_1
+#define Buzzer_GPIO_Port GPIOA
 #define LeftReceiver_Pin GPIO_PIN_5
 #define LeftReceiver_GPIO_Port GPIOA
 #define FrontLeftReceiver_Pin GPIO_PIN_6
