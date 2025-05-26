@@ -182,8 +182,8 @@ void setPIDMode(int new_mode) {
 			kD_dist = 0;
 			kP_angl_enc = 0;
 			kD_angl_enc = 0;
-			kP_angl_ir = 0.06;
-			kD_angl_ir = 60;
+			kP_angl_ir = 0.03;
+			kD_angl_ir = 6000000;
 			break;
 		case(TURN):
 			mode = new_mode;

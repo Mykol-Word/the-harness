@@ -20,7 +20,7 @@ Action solver();
 void floodFill();
 void check_if_goal_reached();
 
-void setup_environment();
+void setup_environment(int bias);
 void reset_environment();
 
 bool wall_north(Cell* cell);
@@ -29,6 +29,7 @@ bool wall_south(Cell* cell);
 bool wall_west(Cell* cell);
 
 Cell** find_neighbor_cells(Cell* current_cell);
+Cell** find_neighbor_cells_right(Cell* current_cell);
 bool cell_exists(int x, int y);
 void set_walls();
 

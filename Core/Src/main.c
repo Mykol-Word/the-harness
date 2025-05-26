@@ -61,6 +61,7 @@ int16_t left_counts = 0;
 int16_t right_counts = 0;
 Action last_action = 0;
 
+int right_bias = 0;
 
 float left_ir_m= 0;
 float front_left_ir_m= 0;
@@ -154,7 +155,8 @@ int main(void)
 	left_counts = getLeftEncoderCounts();
 	right_counts = getRightEncoderCounts();
 
-    setup_environment();
+	HAL_Delay(4000);
+    setup_environment(right_bias);
     /*
     move_ir(615);
     idle();
@@ -575,6 +577,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : Button_Pin */
+  GPIO_InitStruct.Pin = Button_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Button_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pins : LED_1_Pin LED_2_Pin LeftEmitter_Pin */
   GPIO_InitStruct.Pin = LED_1_Pin|LED_2_Pin|LeftEmitter_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -596,6 +604,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(FrontLeftEmitter_GPIO_Port, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
 }
@@ -605,6 +617,16 @@ ADC_HandleTypeDef* Get_HADC1_Ptr(void)
 {
 	return &hadc1;
 }
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_PIN)
+{
+	if (GPIO_PIN == Button_Pin)
+	{
+		HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, GPIO_PIN_SET);
+		right_bias = 1;
+	}
+}
+
 /* USER CODE END 4 */
 
 /**

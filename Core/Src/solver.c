@@ -7,6 +7,8 @@
 #include "Cell.h"
 #include "Mouse.h"
 
+int right_flood_bias = 0;
+
 //16x16 maze of cell pointers
 Cell* maze[16][16];
 
@@ -101,7 +103,9 @@ void floodFill()
     while (cell_queue.head)
     {
         Cell* current_cell = pop(&cell_queue);
-        Cell** neighboring_cells = find_neighbor_cells(current_cell); // Four neighboring cells
+        Cell** neighboring_cells;
+        if(right_flood_bias) neighboring_cells = find_neighbor_cells_right(current_cell);
+        else neighboring_cells = find_neighbor_cells(current_cell);
         for(int c = 0; c < 4; c++)
         {
             if(neighboring_cells[c] && neighboring_cells[c]->dist == BLANK)
@@ -141,7 +145,9 @@ Action move_to_smaller_cell()
     int y = mouse.y_coord;
 
     Cell* current_cell = maze[x][y];
-    Cell** neighboring_cells = find_neighbor_cells(current_cell);
+    Cell** neighboring_cells;
+    if(right_flood_bias) neighboring_cells = find_neighbor_cells_right(current_cell);
+    else neighboring_cells = find_neighbor_cells(current_cell);
 
     for(int c = 0; c < 4; c++)
     {
@@ -250,7 +256,7 @@ Heading cell_direction_from_mouse(int cell_x, int cell_y)
         return SOUTH;
 }
 
-Cell** find_neighbor_cells(Cell* current_cell)
+Cell** find_neighbor_cells_right(Cell* current_cell)
 {
     Cell** neighboring_cells = malloc(4 * sizeof(Cell*));
     for (int c = 0; c < 4; c++) {
@@ -273,6 +279,29 @@ Cell** find_neighbor_cells(Cell* current_cell)
     return neighboring_cells;
 }
 
+Cell** find_neighbor_cells(Cell* current_cell)
+{
+    Cell** neighboring_cells = malloc(4 * sizeof(Cell*));
+    for (int c = 0; c < 4; c++) {
+        neighboring_cells[c] = 0;
+    }
+
+    int x = current_cell->x_coord;
+    int y = current_cell->y_coord;
+    unsigned int walls = current_cell->walls;
+
+    if (y + 1 < MAZE_H && !wall_north(current_cell))
+        neighboring_cells[0] = maze[x][y + 1];
+    if (x + 1 < MAZE_W && !wall_east(current_cell))
+        neighboring_cells[1] = maze[x + 1][y];
+    if (x - 1 >= 0 && !wall_west(current_cell))
+        neighboring_cells[2] = maze[x - 1][y];
+    if (y - 1 >= 0 && !wall_south(current_cell))
+        neighboring_cells[3] = maze[x][y - 1];
+
+    return neighboring_cells;
+}
+
 bool cell_exists(int x, int y)
 {
     return (x < MAZE_W && x >= 0 && y < MAZE_H && y >= 0);
@@ -280,8 +309,9 @@ bool cell_exists(int x, int y)
 
 
 //Setup the environment
-void setup_environment()
+void setup_environment(int bias)
 {
+	right_flood_bias = bias;
     //Setup cell queue
     cell_queue.head = 0;
     cell_queue.tail = 0;

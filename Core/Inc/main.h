@@ -73,6 +73,9 @@ ADC_HandleTypeDef* Get_HADC1_Ptr(void);
 #define MotorCh4_GPIO_Port GPIOB
 #define MotorCh3_Pin GPIO_PIN_11
 #define MotorCh3_GPIO_Port GPIOB
+#define Button_Pin GPIO_PIN_13
+#define Button_GPIO_Port GPIOB
+#define Button_EXTI_IRQn EXTI15_10_IRQn
 #define LED_1_Pin GPIO_PIN_14
 #define LED_1_GPIO_Port GPIOB
 #define LED_2_Pin GPIO_PIN_15
