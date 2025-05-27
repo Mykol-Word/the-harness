@@ -1,5 +1,8 @@
 # The Harness
-"The Harness" is my custom-designed micromouse to compete in the 2025 All American Micromouse Competition (AAMC). This design is a lot more compact and sleak than my initial design which competed in the 2024 AAMC and placed 5th overall.
+"The Harness" was my custom-designed micromouse built to compete in the 2025 All-American Micromouse Competition (AAMC). It placed 3rd overall with a completion time of 21.639 seconds.
+
+> [!NOTE]
+> This design is a lot more compact and sleak than my initial design which competed in the 2024 AAMC and placed 5th overall with a completion time of 83.438 seconds.
 
 All of the PCB design files can be found in "mouse_schematic.zip" and all of the relevant-software can be found in the "Core" folder.
 
